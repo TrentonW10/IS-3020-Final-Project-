@@ -9,6 +9,7 @@ I developed the original version of the Basketball Training Log on my own before
 ## AI Tools Used
 
 Microsoft Copilot
+
 Claude
 
 ## Improvements Requested
