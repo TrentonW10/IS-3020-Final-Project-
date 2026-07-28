@@ -24,28 +24,37 @@ the command-line menu with a simple graphical user interface.
 
 import csv
 
+# Name of the file used to store all training session data
 FILE_NAME = "training_log.csv"
+
+# Column names used in the CSV file
 FIELDNAMES = ["date", "drill", "made", "attempted", "notes"]
 
 
 def load_sessions():
+    """Load all training sessions from the CSV file and return them as a list of dictionaries."""
     sessions = []
     try:
         with open(FILE_NAME, "r", newline="", encoding="utf-8") as f:
             reader = csv.DictReader(f)
             for row in reader:
+                # Convert made and attempted from strings to integers
                 try:
                     row["made"] = int(row["made"])
                     row["attempted"] = int(row["attempted"])
                 except:
+                    # Skip any row that has invalid or missing numeric data
                     continue
                 sessions.append(row)
     except:
+        # If the file does not exist yet, return an empty list
         pass
     return sessions
 
 
 def save_session(session):
+    """Append a single session dictionary to the CSV file. Write the header if the file is new."""
+    # Check if the file already exists to decide whether to write the header
     try:
         with open(FILE_NAME, "r", encoding="utf-8"):
             file_exists = True
@@ -54,16 +63,19 @@ def save_session(session):
 
     with open(FILE_NAME, "a", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=FIELDNAMES)
+        # Only write the header row when creating the file for the first time
         if not file_exists:
             writer.writeheader()
         writer.writerow(session)
 
 
 def log_session(sessions):
+    """Prompt the user for session details, validate input, and save the new session."""
     print("\n--- Log New Training Session ---")
     date = input("Date: ").strip()
     drill = input("Drill type: ").strip()
 
+    # Keep asking until the user enters valid, logical numeric values
     while True:
         made_input = input("Shots made: ").strip()
         attempted_input = input("Shots attempted: ").strip()
@@ -83,6 +95,7 @@ def log_session(sessions):
 
     notes = input("Notes: ").strip()
 
+    # Store the session as a dictionary matching the CSV fieldnames
     session = {
         "date": date,
         "drill": drill,
@@ -97,11 +110,13 @@ def log_session(sessions):
 
 
 def view_sessions(sessions):
+    """Display all logged training sessions in a readable format."""
     print("\n--- All Sessions ---")
     if not sessions:
         print("No sessions logged.")
         return
 
+    # Print each session with a numbered label
     for i, s in enumerate(sessions, start=1):
         print(f"\nSession {i}:")
         print(" Date:", s["date"])
@@ -112,6 +127,7 @@ def view_sessions(sessions):
 
 
 def show_summary(sessions):
+    """Calculate and display overall shooting stats across all logged sessions."""
     print("\n--- Summary ---")
     if not sessions:
         print("No sessions logged.")
@@ -121,10 +137,12 @@ def show_summary(sessions):
     total_made = 0
     total_attempted = 0
 
+    # Add up makes and attempts across every session
     for s in sessions:
         total_made += s["made"]
         total_attempted += s["attempted"]
 
+    # Avoid division by zero if no shots were attempted
     if total_attempted > 0:
         percentage = (total_made / total_attempted) * 100
     else:
@@ -137,14 +155,16 @@ def show_summary(sessions):
 
 
 def filter_by_drill(sessions):
+    """Filter and display shooting stats for a specific drill type entered by the user."""
     print("\n--- Drill Stats ---")
     if not sessions:
         print("No sessions logged.")
         return
 
     drill_name = input("Drill type: ").strip().lower()
-    filtered = []
 
+    # Collect only the sessions that match the requested drill type
+    filtered = []
     for s in sessions:
         if s["drill"].lower() == drill_name:
             filtered.append(s)
@@ -160,6 +180,7 @@ def filter_by_drill(sessions):
         total_made += s["made"]
         total_attempted += s["attempted"]
 
+    # Avoid division by zero if no shots were attempted for this drill
     if total_attempted > 0:
         percentage = (total_made / total_attempted) * 100
     else:
@@ -173,6 +194,13 @@ def filter_by_drill(sessions):
 
 
 def main_menu():
+    """Run the main menu loop, loading sessions at startup and routing user choices to functions."""
+
+    # This program demonstrates how the concepts from the course can work together
+    # in one small application. It uses a menu, functions, lists, dictionaries,
+    # conditionals, loops, a CSV file, and try/except.
+
+    # Load any existing sessions from the CSV file before showing the menu
     sessions = load_sessions()
 
     while True:
@@ -185,6 +213,7 @@ def main_menu():
 
         choice = input("Choose (1-5): ").strip()
 
+        # Route the user's choice to the appropriate function
         if choice == "1":
             log_session(sessions)
         elif choice == "2":
