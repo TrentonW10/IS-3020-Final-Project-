@@ -54,3 +54,14 @@ The application was tested by logging valid sessions, entering letters instead o
 ## AI Use
 
 Microsoft Copilot was used after the original command-line version was working. It helped improve input validation, switch from csv.writer to csv.DictWriter and csv.DictReader, add the drill filter feature as a fifth menu option, and convert the sessions variable from a global into a function parameter. See AI_USAGE.md for the full improvement record.
+GitHub Milestones
+
+##GitHub Accomplishments
+
+This project demonstrates the following required commits:
+
+Initial project setup
+
+Original working version before AI improvement
+
+Final version after AI improvement
